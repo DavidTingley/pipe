@@ -118,7 +118,8 @@ function nginfo = read_sbxinfo(path, force)
         info.otlevels = 1;
         if isfield(info, 'volscan') && info.volscan > 0, info.optotune_used = true; end
         if ~isfield(info, 'volscan') && ~isempty(info.otwave), info.optotune_used = true; end
-        if info.optotune_used, info.otlevels = length(info.otwave); end
+        if info.optotune_used, info.otlevels = info.otparam(end); end
+        %nghia commented out
         
         info.framerate = 15.49;
         if info.scanmode == 0

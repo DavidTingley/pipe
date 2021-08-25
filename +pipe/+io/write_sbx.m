@@ -1,14 +1,14 @@
-function [ output_args ] = write_sbx(movie, path, date, run, server, varargin)
+function [ output_args ] = write_sbx(movie, filepath, varargin)
 %WRITE_SBX Summary of this function goes here
 %   Detailed explanation goes here
 
-    if nargin < 5, server = []; end
+%     if nargin < 5, server = []; end
 
-    if nargin >= 4
-        mouse = path;
-        path = pipe.lab.rundir(path, date, run, server);
-        path = fullfile(path, sprintf('%s_%06i_%03i.sbx', mouse, date, run));
-    end
+%     if nargin >= 4
+%         mouse = filepath;
+%         filepath = pipe.lab.rundir(filepath, date, run, server);
+%         filepath = fullfile(filepath, sprintf('%s_%06i_%03i.sbx', mouse, date, run));
+%     end
 
     p = inputParser;
     addOptional(p, 'force', false);  % Overwrite if true
@@ -16,12 +16,12 @@ function [ output_args ] = write_sbx(movie, path, date, run, server, varargin)
     p = p.Results;
     
     % Loop and save
-    if exist(path, 'file') && ~p.force
+    if exist(filepath, 'file') && ~p.force
         return;
     end
     
     
-    info = pipe.io.write_sbxinfo(path, 'movie', movie);
+    info = pipe.io.write_sbxinfo(filepath, 'movie', movie);
     if ndims(movie) == 4
         info.nframes = size(movie, 4);
     elseif ndims(movie) == 3
@@ -30,7 +30,7 @@ function [ output_args ] = write_sbx(movie, path, date, run, server, varargin)
         info.nframes = 1;
     end
     
-    rw = pipe.io.RegWriter(path, info, 'sbx', p.force);
+    rw = pipe.io.RegWriter(filepath, info, 'sbx', p.force);
     rw.write(movie);
     rw.close();
 

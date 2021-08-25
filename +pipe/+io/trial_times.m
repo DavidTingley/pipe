@@ -113,7 +113,22 @@ function out = trial_times(mouse, date, run, server, force, allowrunthrough, int
             warndlg(sprintf(...
                 'There is an error in the number of monkeylogic stimuli presented, %i, and the number detected by the nidaq card, %i.',...
                 length(ml.ConditionNumber), length(onsetst)));
-            return
+            % nghia add to guess where first cue started (offsets was
+            % recorded correctly
+            b = find(diff(nidaq.visstim)<-3);
+            first_offset = b(1);
+            b(1) = [];
+            a = find(diff(nidaq.visstim) > 3);
+            average_cue_time = round(mean(b-a));
+            nidaq.visstim(1:first_offset-average_cue_time) = 0;
+            
+            % Get the timing of visual stimuli
+            [onsetst, offsetst] = ttledges(nidaq.visstim, nidaq.timeStamps, miniti, ttlv);
+
+            % Convert to onsets
+            onsets = localTimesToOnsets(onset2p, onsetst);
+            offsets = localTimesToOnsets(onset2p, offsetst);
+            %return
         end
     end
 
@@ -125,6 +140,9 @@ function out = trial_times(mouse, date, run, server, force, allowrunthrough, int
     ensure = trializeOnsets(onsets, localTimesToOnsets(onset2p, ensuret));
     quinine = trializeOnsets(onsets, localTimesToOnsets(onset2p, quininet));
 
+    % nghia add as last ensure trial always missing
+    %ensure(:,2) = localTimesToOnsets(onset2p, ensuret);
+    
     % Get key data from ML
     condition = uint8(ml.ConditionNumber);
     trialerror = uint8(ml.TrialError);
@@ -142,6 +160,10 @@ function out = trial_times(mouse, date, run, server, force, allowrunthrough, int
     % Check whether it is retinotopy or a stimulus run
     codes = timingFileCodes(ml);
     orientation = orientationCodes(ml, codes);
+    
+    %nghia delete first trial sometimes
+    %condition(1) = [];
+    %trialerror(1) = [];
     
     % And save
     save(spath, 'onsets', 'offsets', 'licking', 'ensure', 'quinine', ...
@@ -490,11 +512,11 @@ function [oris, codes] = orientationCodes(ml, codes)
     end
     
     if isfield(oris, 'minus') && oris.minus < 0
-        warndlg('Minus trials were showing blank presentations');
+        %warndlg('Minus trials were showing blank presentations');
     end
     
     if isfield(oris, 'pavlovian') && oris.pavlovian < 0
-        warndlg('Pavlovian trials were showing blank presentations');
+        %warndlg('Pavlovian trials were showing blank presentations');
     end
     
     if isfield(oris, 'pavlovian') && isfield(oris, 'plus') && oris.plus ~= oris.pavlovian

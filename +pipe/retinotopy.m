@@ -148,15 +148,15 @@ function images = retinotopy(path)
     vert = zeros(size(mean_im, 1), size(mean_im, 2), n_bars);
     
     for i = 1:n_bars
-        horz(:, :, i) = images{2*(i - 1) + 1};
+%nghia        horz(:, :, i) = images{2*(i - 1) + 1};
         vert(:, :, i) = images{2*(i - 1) + 2};
     end
     
     [base, filename, ~] = fileparts(path_mov);
-    pipe.io.write_tiff(horz, fullfile(base, [filename '-horizontal_bars_tb.tif']));
+%nghia    pipe.io.write_tiff(horz, fullfile(base, [filename '-horizontal_bars_tb.tif']));
     pipe.io.write_tiff(vert, fullfile(base, [filename '-vertical_bars_lr.tif']));
     pipe.io.write_tiff(mean_im, fullfile(base, [filename '-mean_image.tif']));
-    imwrite(round(rgb_horz*255), fullfile(base, [filename '-horizontal_bars_clr.jpg']))
+%nghia    imwrite(round(rgb_horz*255), fullfile(base, [filename '-horizontal_bars_clr.jpg']))
     imwrite(round(rgb_vert*255), fullfile(base, [filename '-vertical_bars_clr.jpg']))
     imwrite(round(rgb_vert*255), fullfile(base, [filename '-mean_image.jpg']))
     

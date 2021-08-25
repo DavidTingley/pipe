@@ -19,7 +19,23 @@ function premasks(mouse, date, runs, server)
 
                 if isfield(eye, 'data')
                     eye = squeeze(eye.data);  % This is a matrix
-
+                    
+                    %Nghia add for hutch streaming mj2 file instead
+                    if isempty(eye)
+                        eye = {};
+                        eye_path = pipe.path(mouse, date, run, 'pupil', server);
+                        eye_path = erase(eye_path, '.mat');
+                        eye_path = [eye_path, '.mj2'];
+                        v = VideoReader(eye_path);
+                        curr_frame = 0;
+                        while hasFrame(v)
+                            curr_frame = curr_frame + 1;
+                            eye{curr_frame} = readFrame(v);
+                        end
+                        eye = cell2mat(eye);
+                        eye = reshape(eye, v.Height, v.Width, curr_frame);
+                    end
+                    
                     % Get the best image for determining the outline and get the mask
                     av = mean(eye, 3);
                     av = av - min(min(av));

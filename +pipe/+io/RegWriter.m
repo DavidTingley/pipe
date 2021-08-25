@@ -31,12 +31,14 @@ classdef RegWriter < handle
                         info.nchan = 1;      % PMT 0
                     case 3
                         info.nchan = 1;      % PMT 1
+                    case -1
+                        info.nchan = 1;
                 end
             end
             
             obj.info = info;
             obj.path = path;
-            obj.fid = fopen(obj.path, 'w');
+            obj.fid = fopen(obj.path, 'a');
         end
         
         function write(obj, data)
@@ -86,7 +88,7 @@ classdef RegWriter < handle
         function close(obj)
             % Close and save the file
             if isempty(obj.fid), error('No file to close.'); end
-            if obj.curframe <= obj.info.nframes, warndlg('Did not write enough frames'); end
+%             if obj.curframe <= obj.info.nframes, warndlg('Did not write enough frames'); end
             fclose(obj.fid);
             obj.fid = [];
             % Note, add optional info writer

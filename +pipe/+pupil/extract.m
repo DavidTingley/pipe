@@ -63,6 +63,24 @@ function [dx, dy, psum, area, quality] = extract(mouse, date, run, varargin)
         error('No eye file found');
     end
     e = load(pupil_path, '-mat');
+    
+    %Nghia add for hutch streaming mj2 file
+    if isempty(e.data)
+        e_temp = {};
+        eye_path = pipe.path(mouse, date, run, 'pupil');
+        eye_path = erase(eye_path, '.mat');
+        eye_path = [eye_path, '.mj2'];
+        v = VideoReader(eye_path);
+        curr_frame = 0;
+        while hasFrame(v)
+            curr_frame = curr_frame + 1;
+            e_temp{curr_frame} = readFrame(v);
+        end
+        e_temp = cell2mat(e_temp);
+        e_temp = reshape(e_temp, v.Height, v.Width, curr_frame);
+        e.data = e_temp;
+    end
+    
     if ~isfield(e, 'data') 
         error('No pupil data in eye file.');
     end
