@@ -8,12 +8,12 @@ classdef RegWriter < handle
     end
     
     methods
-        function obj = RegWriter(path, info, extension, force)
+        function obj = RegWriter(path, info, extension, force, mode)
             % Path for saving and info for matching, force allows overwrite
             % Set the extension if not sbxreg
             
-            if nargin < 3, extension = '.sbxreg'; end
-            if nargin < 4, force = false; end
+            if nargin < 3, extension = '.sbxreg'; force = false; mode = 'w'; end
+            if nargin < 4, force = false; mode = 'w'; end
             
             if ~strcmp(extension(1), '.'), extension = ['.' extension]; end
             [base, name, ~] = fileparts(path);
@@ -38,7 +38,7 @@ classdef RegWriter < handle
             
             obj.info = info;
             obj.path = path;
-            obj.fid = fopen(obj.path, 'a');
+            obj.fid = fopen(obj.path, mode);
         end
         
         function write(obj, data)
