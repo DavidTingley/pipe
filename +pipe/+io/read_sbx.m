@@ -52,7 +52,7 @@ function x = read_sbx(path, k, N, pmt, optolevel)
             error('Cannot read frame. Index range likely outside of bounds.');
         end
     else
-        optocycle = length(info.otwave);  % Length of the optotune cycle
+        optocycle = info.otlevels;  % Length of the optotune cycle
         if optolevel > optocycle
             error('There are not that many optolevels.');
         end

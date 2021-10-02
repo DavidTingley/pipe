@@ -14,6 +14,7 @@ function [ output_args ] = write_sbx(movie, filepath, varargin)
     addOptional(p, 'force', false);  % Overwrite if true
     parse(p, varargin{:});
     p = p.Results;
+   
     
     % Loop and save
     if exist(filepath, 'file') && ~p.force

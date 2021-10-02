@@ -14,6 +14,7 @@ classdef RegWriter < handle
             
             if nargin < 3, extension = '.sbxreg'; force = false; mode = 'w'; end
             if nargin < 4, force = false; mode = 'w'; end
+            if nargin < 5, mode = 'w'; end
             
             if ~strcmp(extension(1), '.'), extension = ['.' extension]; end
             [base, name, ~] = fileparts(path);
@@ -59,7 +60,7 @@ classdef RegWriter < handle
             end
             
             if ndims(data) == 4 && size(data, 1) == obj.info.nchan ...
-                    && obj.info.sz(1) == size(data, 2) && obj.info.sz(2) == size(data, 3) ...
+                    && obj.info.width == size(data, 2) && obj.info.height == size(data, 3) ...
                     && size(data, 4) + obj.curframe - 1 <= obj.info.nframes
                 
                 if ~isa(data, 'uint16')
