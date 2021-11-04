@@ -41,7 +41,7 @@ A = cell(k+Nt-1,1);
 %load each volume (parallelized) and take projection
 h = parfor_progressbar(Nt,'doing z projection...');
 
-parfor i = k:k+Nt-1
+for i = k:k+Nt-1
     
     if p.registration
         vol = pipe.imread(movpath,(i-1)*Nz+1,Nz,pmt,[], ...
@@ -60,21 +60,21 @@ parfor i = k:k+Nt-1
     
     if strcmp(p.proj_type,'mean')
         if pmt == -1
-            slice = squeeze(mean(vol,4,'omitnan'));
+            slice = single(squeeze(mean(vol,4,'omitnan')));
         else
-            slice = squeeze(mean(vol,3,'omitnan'));
+            slice = single(squeeze(mean(vol,3,'omitnan')));
         end
     elseif strcmp(p.proj_type,'max')
         if pmt == -1            
-            slice = squeeze(max(vol,[],4,'omitnan'));
+            slice = single(squeeze(max(vol,[],4,'omitnan')));
         else         
-            slice = squeeze(max(vol,[],3,'omitnan'));
+            slice = single(squeeze(max(vol,[],3,'omitnan')));
         end
     elseif strcmp(p.proj_type,'median')
         if pmt == -1
-            slice = squeeze(median(vol,4,'omitnan'));
+            slice = single(squeeze(median(vol,4,'omitnan')));
         else
-            slice = squeeze(median(vol,3,'omitnan'));
+            slice = single(squeeze(median(vol,3,'omitnan')));
         end
     else
         disp('invalid projection type');
@@ -82,6 +82,7 @@ parfor i = k:k+Nt-1
     slice(isnan(slice)) = 0;
     A{i,:} = slice;
     h.iterate(1);
+    disp(i)
 end
 out = zeros(Nc,Nx,Ny,Nt);
 out = squeeze(out);

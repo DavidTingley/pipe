@@ -117,7 +117,7 @@ function nginfo = read_sbxinfo(path, force)
         info.optotune_used = false;
         info.otlevels = 1;
         if isfield(info, 'volscan') && info.volscan > 0, info.optotune_used = true; end
-        if ~isfield(info, 'volscan') && ~isempty(info.otwave), info.optotune_used = true; end
+        if ~isfield(info, 'volscan') && ~isempty(info.otlevels), info.optotune_used = true; end
         if info.optotune_used, info.otlevels = info.otparam(end); end
         %nghia commented out
         
