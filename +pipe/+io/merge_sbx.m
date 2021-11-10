@@ -1,9 +1,9 @@
 function [] = merge_sbx(fileList)
 
 for f = 1:length(fileList)
-       meta = strsplit(fileList(f),'.');
+       meta = strsplit(fileList(f).name,'.');
        info = pipe.io.read_sbxinfo([meta{1} '.mat']);
-       temp = pipe.io.read_sbx(fileList(f));
+       temp = pipe.io.read_sbx(fileList(f).name);
        
        t = strsplit(meta{1},'_');
        animal = t{1};
@@ -18,14 +18,11 @@ for f = 1:length(fileList)
            completeStacks = floor(size(temp,4)/info.otlevels);
            temp = temp(:,:,:,1:completeStacks * info.otlevels);
        end
-       
-       
-       disp(['writing file #' num2str(run(r)) ' to merge file'])
+          
+       disp(['writing file #' num2str(f) ' to merge file'])
        nFrames(f) = size(temp,ndims(temp));
        nstacks(f) = completeStacks;
-       
-       info.nframes = sum(nFrames);
-  
+
        if r == 1
         rw = pipe.io.RegWriter([mergeFile '.sbx'], info, 'sbx', true,'w');      
        else
@@ -34,5 +31,9 @@ for f = 1:length(fileList)
        rw.write(temp);
        rw.close()
        
-        save([mergeFile '.mat'],'info')
-   end
+      
+end
+     info.nframes = sum(nFrames);
+     info.nstacks = nstacks;
+     save([mergeFile '.mat'],'info')
+end
