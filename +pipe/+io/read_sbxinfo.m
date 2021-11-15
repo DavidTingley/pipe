@@ -1,4 +1,4 @@
-function nginfo = read_sbxinfo(path, force)
+function nginfo = read_sbxinfo(filepath, force)
 %get the global info variable
 % WARNING: corrects the number of channels for .sbxreg and .sbxclean files
 
@@ -6,7 +6,7 @@ function nginfo = read_sbxinfo(path, force)
     global pipe_info_loaded info
 
     % Make sure we're opening the info .mat file
-    [parent, fname, ext] = fileparts(path);
+    [parent, fname, ext] = fileparts(filepath);
     
     % LEGACY
     % An annoying bit of legacy code, catch the fact that we used to split
@@ -28,7 +28,7 @@ function nginfo = read_sbxinfo(path, force)
     if ~isempty(parent), parent = [parent '\']; end
     base = [parent fname];
     ipath = [base '.mat'];
-    if isempty(ext), path = [path '.sbx']; end
+    if isempty(ext), filepath = [filepath '.sbx']; end
 
     % Force reopening info if loading a file
     if nargin == 2 && force
@@ -101,8 +101,8 @@ function nginfo = read_sbxinfo(path, force)
                 end
         end
 
-        info.fid = fopen(path);
-        d = dir(path);
+        info.fid = fopen(filepath);
+        d = dir(filepath);
         info.nsamples = (info.sz(2)*info.recordsPerBuffer*2*info.nchan);   % bytes per record 
 
         if isfield(info, 'scanbox_version') && info.scanbox_version >= 2
