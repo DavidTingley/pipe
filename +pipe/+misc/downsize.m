@@ -1,11 +1,11 @@
-function [out] = downsize(vid_fname,otlevels,window,newSize,nFrames)
+function [out] = downsize(vid_fname,otlevels,window,newSize,nFrames,pmt)
 
 chunkSize = 10 * otlevels * window;
 % newSize = 1/4;
 
-parfor i=1:ceil(nFrames/chunkSize)
+for i=1:ceil(nFrames/chunkSize)
     try
-        temp = pipe.io.read_sbx(vid_fname,1 + (i-1)*chunkSize,chunkSize,1,[]);
+        temp = pipe.io.read_sbx(vid_fname,1 + (i-1)*chunkSize,chunkSize,pmt,[]);
         temp = pipe.misc.ts2stackTS(temp,otlevels);
         temp2 = zeros(ceil(size(temp,1)*newSize),ceil(size(temp,2)*newSize),otlevels,floor((size(temp,4))/window),'single');
 

@@ -16,7 +16,7 @@ classdef RegWriter < handle
             if nargin < 4, force = false; mode = 'w'; end
             if nargin < 5, mode = 'w'; end
             
-            if ~strcmp(extension(1), '.'), extension = ['.' extension]; end
+%             if ~strcmp(extension(1), '.'), extension = ['.' extension]; end
             [base, name, ~] = fileparts(path);
             path = fullfile(base, [name extension]);
             

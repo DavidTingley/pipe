@@ -1,4 +1,4 @@
-function mov = imread(path, k, N, pmt, optolevel, varargin)
+function mov = imread(path, k, N, pmt, optolevel, info, varargin)
 % READ: read movie files. As of now can handle SBX. Will add TIF.
 
     % BEWARE: Corrected from 0-indexed to 1-indexed, both for k and pmt
@@ -25,6 +25,8 @@ function mov = imread(path, k, N, pmt, optolevel, varargin)
     if nargin < 4, pmt = 1; end
     % Read a larger chunk if optotune was used
     if nargin < 5, optolevel = []; end
+    %
+    if nargin < 6, info = pipe.io.read_sbxinfo(path, true); end
     
     p = inputParser;
     addOptional(p, 'mtype', []);  % Movie type- estimated from extension unless entered here
@@ -41,7 +43,7 @@ function mov = imread(path, k, N, pmt, optolevel, varargin)
     [~, ~, ext] = fileparts(path);
     if p.register
         if strcmpi(ext, '.sbxreg')
-            mov = pipe.io.read_sbx(path, k, N, pmt, optolevel);
+            mov = pipe.io.read_sbx(path, k, N, pmt, optolevel,info);
             return
         end
 
@@ -49,7 +51,7 @@ function mov = imread(path, k, N, pmt, optolevel, varargin)
         % Catch existing sbxreg files
         if ~p.ignore_sbxreg && exist(fullfile(base, [name '.sbxreg']), 'file')
             mov = pipe.io.read_sbx(fullfile(base, [name '.sbxreg']), ...
-                                   k, N, pmt, optolevel);
+                                   k, N, pmt, optolevel,info);
             return;
         end
 
@@ -73,7 +75,7 @@ function mov = imread(path, k, N, pmt, optolevel, varargin)
     
     %% Read file
     if strcmpi(p.mtype, 'sbx') || (length(ext) > 3 && strcmpi(ext(1:4), '.sbx'))
-        mov = pipe.io.read_sbx(path, k, N, pmt, optolevel);
+        mov = pipe.io.read_sbx(path, k, N, pmt, optolevel,info);
     else
         error('Cannot read movie type.');
     end

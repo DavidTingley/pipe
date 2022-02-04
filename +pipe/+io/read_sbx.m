@@ -1,4 +1,4 @@
-function x = read_sbx(path, k, N, pmt, optolevel)
+function x = read_sbx(path, k, N, pmt, optolevel, info)
     % BEWARE: Corrected from 0-indexed to 1-indexed, both for k and pmt
     % Reads from frame k to k + (N - 1) in file fname
     % path  - the file path to .sbx file (e.g., 'xx0_000_001')
@@ -14,8 +14,9 @@ function x = read_sbx(path, k, N, pmt, optolevel)
     % If N<0 it returns an array to the end
 
     % Force a reload of the global info variables. Without this, trouble arises
-    info = pipe.io.read_sbxinfo(path, true);
-
+    if nargin < 6
+        info = pipe.io.read_sbxinfo(path, true);
+    end
     % Set to start at beginning if necessary
     % Note- it is which volume if optolevel is not empty
     if nargin < 2, k = 1; end

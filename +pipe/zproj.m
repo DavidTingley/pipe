@@ -1,6 +1,5 @@
-function out = zproj(path, k, Nt, pmt, otrange, varargin)
+function out = zproj(movpath, k, Nt, pmt, otrange, info, varargin)
 
-info = pipe.io.read_sbxinfo(path);
 %if not specified, average first thirty volumes
 if nargin < 2, Nt = floor(info.nframes / info.otlevels) - 1; end
 %if not specified, load both PMTs
@@ -27,9 +26,6 @@ Nx = info.width;
 Ny = info.height;
 Nz = info.otlevels;
 
-[base,name,~] = fileparts(path);
-movpath = fullfile(base,strcat(name,p.mtype));
-
 if p.registration
     regpath = fullfile(base,strcat(name,p.reg_suffix));
 else
@@ -44,10 +40,10 @@ h = parfor_progressbar(Nt,'doing z projection...');
 for i = k:k+Nt-1
     
     if p.registration
-        vol = pipe.imread(movpath,(i-1)*Nz+1,Nz,pmt,[], ...
+        vol = pipe.imread(movpath,(i-1)*Nz+1,Nz,pmt,[],info, ...
         'register',true,'registration_path',regpath,'mtype',p.mtype);
     else
-        vol = pipe.imread(movpath,(i-1)*Nz+1,Nz,pmt,[],'mtype',p.mtype);
+        vol = pipe.imread(movpath,(i-1)*Nz+1,Nz,pmt,[],info,'mtype',p.mtype);
     end
     
     if Nc == 1
